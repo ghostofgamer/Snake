@@ -11,27 +11,28 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private Transform[] _points;
 
-    private float _timeToNextSpawn = 1.5f;
+    private static float _timeToNextSpawn = 3f;
     private float _elapsedTime = 0f;
     private ObjectPool<Food> _pool;
+    private WaitForSeconds _waitForSeconds = new WaitForSeconds(_timeToNextSpawn);
 
     private void Start()
     {
         _pool = new ObjectPool<Food>(_prefab, _count, _container);
         _pool.GetAutoExpand(_autoExpand);
+        StartCoroutine(SpawnFood());
     }
 
-    private void Update()
+    private IEnumerator SpawnFood()
     {
-        _elapsedTime += Time.deltaTime;
-
-        if (_elapsedTime >= _timeToNextSpawn)
+        while (!_player.Die)
         {
             if (_pool.TryGetObject(out Food food, _prefab))
             {
                 GetPosition(food);
-                _elapsedTime = 0f;
             }
+
+            yield return _waitForSeconds;
         }
     }
 

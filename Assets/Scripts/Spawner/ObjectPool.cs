@@ -39,12 +39,6 @@ public class ObjectPool<T> where T : MonoBehaviour
         AutoExpand = flag;
     }
 
-    public void Reset()
-    {
-        foreach (var item in _poolGeneric)
-            item.gameObject.SetActive(false);
-    }
-
     private void GetInitialization(int count, T prefabs)
     {
         _poolGeneric = new List<T>();

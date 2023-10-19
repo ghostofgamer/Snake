@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     private List<Tail> _tails = new List<Tail>();
 
     public List<Tail> Tails => _tails;
+    public bool Die { get; private set; } = false;
 
     private void Start()
     {
