@@ -11,7 +11,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private Transform[] _points;
 
-    private float _timeToNextSpawn = 1f;
+    private float _timeToNextSpawn = 1.5f;
     private float _elapsedTime = 0f;
     private ObjectPool<Food> _pool;
 
@@ -29,10 +29,8 @@ public class Spawner : MonoBehaviour
         {
             if (_pool.TryGetObject(out Food food, _prefab))
             {
-                int randomIndex = Random.Range(0,_points.Length);
+                GetPosition(food);
                 _elapsedTime = 0f;
-                food.Dying += OnFoodDiyng;
-                food.transform.position = _points[randomIndex].position;
             }
         }
     }
@@ -42,9 +40,19 @@ public class Spawner : MonoBehaviour
         _pool.Reset();
     }
 
+    private void GetPosition(Food food)
+    {
+        int randomIndex = Random.Range(0, _points.Length);
+        food.transform.position = _points[randomIndex].position;
+        food.Dying += OnFoodDiyng;
+    }
+
     private void OnFoodDiyng(Food food)
     {
         _player.IncreaseTail();
         food.Dying -= OnFoodDiyng;
+
+        if (_pool.TryGetObject(out Food newFood, _prefab))
+            GetPosition(newFood);
     }
 }
